@@ -8,8 +8,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), var(--font-notoSansTC);
+  --font-notoSansTC: var(--font-notoSansTC);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +23,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@theme {
+  --breakpoint-3xl: 120rem;
+  --color-primary: #e30e0e;
 }
