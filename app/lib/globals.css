@@ -29,3 +29,16 @@ body {
   --breakpoint-3xl: 120rem;
   --color-primary: #e30e0e;
 }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";

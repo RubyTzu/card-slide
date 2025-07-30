@@ -15,8 +15,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
-    <html lang="en">
+    <html lang="zh-TW">
       <body className={`${inter.variable}  ${notoSansTC.variable} antialiased font-sans`}>{children}</body>
     </html>
   );
