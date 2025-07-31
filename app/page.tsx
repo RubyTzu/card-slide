@@ -1,5 +1,5 @@
 import { Cards } from "./component/Cards";
-import { CardsTest } from "./component/CardsTest";
+import { DragTest } from "./component/DragTest";
 
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
     <div className="">
       <main className="flex flex-col items-center justify-center min-h-screen w-full">
         {/* <Cards /> */}
-        <CardsTest />
+        <DragTest />
       </main>
     </div>
   );

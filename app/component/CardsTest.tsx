@@ -7,33 +7,41 @@ const images = [
   { src: "/images/carousel-1.svg", label: "Pic1" },
   { src: "/images/carousel-1.svg", label: "Pic2" },
   { src: "/images/carousel-1.svg", label: "Pic3" },
+  { src: "/images/carousel-1.svg", label: "Pic4" },
+  { src: "/images/carousel-1.svg", label: "Pic5" },
+  { src: "/images/carousel-1.svg", label: "Pic6" },
+  { src: "/images/carousel-1.svg", label: "Pic7" },
 ];
 
 const positions = [
-  { x: -300, y: 300, rotate: -90 }, // Pic1 - left
-  { x: 0, y: 0, rotate: 0 }, // Pic2 - center (visible)
-  { x: 300, y: 300, rotate: 90 }, // Pic3 - right
+  { x: -840, y: 420, rotate: -67.5 },
+  { x: -570, y: 240, rotate: -45 },
+  { x: -300, y: 60, rotate: -22.5 }, // Pic - left
+  { x: 0, y: 0, rotate: 0 }, // Pic - center (visible)
+  { x: 300, y: 60, rotate: 22.5 }, // Pic - right
+  { x: 570, y: 240, rotate: 45 },
+  { x: 840, y: 420, rotate: 67.5 },
 ];
 
 export const CardsTest = () => {
     const [step, setStep] = useState(0);
 
     const next = () => {
-      setStep((prev) => (prev + 1) % 4); // 可依需求循環次數調整
+      setStep((prev) => (prev + 1) % 8); // 可依需求循環次數調整
     };
 
     const getPosition = (i: number) => {
-      const order = (i - step + 3) % 3;
+      const order = (i - step + 7) % 7;
       return positions[order];
     };
-  return (<div className="w-[600px] h-[600px] relative overflow-hidden border mx-auto my-10">
+  return (<div className="w-1/2 h-[300px] relative overflow-hidden mx-auto my-10">
       {images.map((img, i) => {
         const pos = getPosition(i);
 
         return (
           <motion.div
             key={img.label}
-            className="absolute w-[200px] h-[200px] rounded-xl overflow-hidden left-1/2 top-1/2"
+            className="absolute w-[10rem] h-[15rem] rounded-xl overflow-hidden left-1/2 top-1/2"
             animate={{
               x: pos.x,
               y: pos.y,
