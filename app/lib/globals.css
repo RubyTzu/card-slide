@@ -10,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), var(--font-notoSansTC);
   --font-notoSansTC: var(--font-notoSansTC);
+  --font-zilla: var(--font-zilla);
 }
 
 @media (prefers-color-scheme: dark) {

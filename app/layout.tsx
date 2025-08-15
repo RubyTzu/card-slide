@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/lib/globals.css";
-import { inter, notoSansTC } from "@/app/lib/fonts";
+import { inter, notoSansTC, zilla } from "@/app/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Card Slide Project",
@@ -18,7 +18,7 @@ export default function RootLayout({
 
   return (
     <html lang="zh-TW">
-      <body className={`${inter.variable}  ${notoSansTC.variable} antialiased font-sans`}>{children}</body>
+      <body className={`${inter.variable}  ${notoSansTC.variable} ${zilla.variable} antialiased font-sans`}>{children}</body>
     </html>
   );
 }

@@ -6,7 +6,7 @@ const images = [
   { src: "/images/carousel-1.svg", label: "Hate Horror Film" },
   { src: "/images/carousel-1.svg", label: "Swiftie over 13+ years" },
   { src: "/images/carousel-1.svg", label: "❤" },
-  { src: "/images/carousel-1.svg", label: "R" },
+  { src: "/images/carousel-1.svg", label: "Ruby." },
   { src: "/images/carousel-1.svg", label: "INFJ" },
   { src: "/images/carousel-1.svg", label: "Gemini" },
   { src: "/images/carousel-1.svg", label: "Love Sitcom" },
@@ -43,7 +43,8 @@ export const DragCards = () => {
   };
   return (
     <>
-      <div className="w-full h-screen relative overflow-hidden mx-auto cursor-(--my-cursor) bg-[linear-gradient(164deg,#FFFDE3_0%,_#D9FFF5_100%)]  noise">
+      {/* <div className="w-full h-screen relative overflow-hidden mx-auto cursor-(--my-cursor) bg-custom-gradients noise"> */}
+        <div className="w-full h-screen relative overflow-hidden mx-auto cursor-(--my-cursor) bg-[linear-gradient(143deg,rgba(87,199,87,1)_0%,rgba(42,155,89,1)_45%,rgba(55,92,12,1)_100%)] noise">
         {images.map((img, i) => {
           const order = (i - step + images.length) % images.length;
           const pos = getPosition(i);
@@ -53,7 +54,7 @@ export const DragCards = () => {
             <motion.div
               key={img.label}
               onClick={() => handleClick(i)}
-              className="absolute w-[80%] h-[38%] max-w-[500px] sm:w-[60%] sm:h-[65%] border border-white rounded-full overflow-hidden left-1/2 top-1/2 bg-custom-gradients noise"
+              className="absolute w-[80%] h-[38%] max-w-[500px] sm:w-[60%] sm:h-[85%] rounded-xl overflow-hidden left-1/2 top-1/2 noise bg-[radial-gradient(circle,rgba(255,151,82,1)_0%,rgba(255,77,0,1)_56%,rgba(204,82,0,1)_100%)] shadow-lg"
               animate={{ x: pos.x, y: pos.y, rotate: pos.rotate }}
               transition={{ duration: 0.5 }}
               style={{
@@ -75,7 +76,7 @@ export const DragCards = () => {
               }}
               dragElastic={0.3}
               whileDrag={{ cursor: "grabbing" }}>
-              <p className="absolute bottom-[45%] left-[50%] -translate-[50%]  text-blue-800 text-lg font-normal tracking-widest text-center">{img.label}</p>
+              <p className="absolute bottom-[45%] left-[50%] -translate-[50%]  text-[#16a425] text-lg font-normal tracking-widest text-center font-zilla">{img.label}</p>
             </motion.div>
           );
         })}
