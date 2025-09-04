@@ -43,8 +43,7 @@ export const DragCards = () => {
   };
   return (
     <>
-      {/* <div className="w-full h-screen relative overflow-hidden mx-auto cursor-(--my-cursor) bg-custom-gradients noise"> */}
-        <div className="w-full h-screen relative overflow-hidden mx-auto cursor-(--my-cursor) bg-[linear-gradient(143deg,rgba(87,199,87,1)_0%,rgba(42,155,89,1)_45%,rgba(55,92,12,1)_100%)] noise">
+        <div className="">
         {images.map((img, i) => {
           const order = (i - step + images.length) % images.length;
           const pos = getPosition(i);
