@@ -1,155 +1,98 @@
-"use client"
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { motion, useMotionValue } from "framer-motion";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import type { PanInfo } from "framer-motion";
 
-const slides = [
-  {
-    id: 1,
-    title: "Himil Suite",
-    description: "Warm textures, stone & wood, and a view you’ll remember.",
-    image: "/images/carousel-1.svg",
-  },
-  {
-    id: 2,
-    title: "Mountain View",
-    description: "Floor-to-ceiling windows bring the Alps to your bedside.",
-    image: "/images/carousel-1.svg",
-  },
-  {
-    id: 3,
-    title: "Cozy Living",
-    description: "A snug lounge with custom furniture and ambient lighting.",
-    image: "/images/carousel-1.svg",
-  },
-];
+const Dots = ({ count, active }: { count: number; active: number }) => {
+  return (
+    <div className="flex flex-row justify-center relative bottom-5">
+      {Array.from({ length: count }).map((_, i) => (
+        <motion.div key={i} className="w-[6px] h-[6px] bg-white rounded opacity-80 mr-[10px] last:mr-0" animate={{ scale: active === i ? 1.5 : 1, opacity: active === i ? 1 : 0.5 }} />
+      ))}
+    </div>
+  );
+};
 
-const Dots = ({ count, active }: { count: number; active: number }) => (
-  <div className="flex flex-row justify-center relative bottom-5">
-    {slides.map((_, i) => (
-      <motion.div
-        key={i}
-        className="flex flex-row justify-center relative bottom-5"
-        initial={false}
-        animate={{
-          scale: active === i ? 1.5 : 1,
-          opacity: active === i ? 1 : 0.5,
-        }}
-      />
-    ))}
-  </div>
-);
-
-const Slide = ({ color, ...rest }: { color: string }) => <div style={{ backgroundColor: color }} className="min-w-full h-full" {...rest} />;
-
-// 小工具：安全 modulo（可處理負數）
-const mod = (n: number, m: number) => ((n % m) + m) % m;
+const Slide = ({ color }: { color: string }) => <div style={{ backgroundColor: color }} className="min-w-full h-full" />;
 
 export const SlideTest = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const x = useMotionValue(0);
+  const colors = ["blue", "green", "orange"]; // 真實幻燈片
+  const count = colors.length;
 
-  // 原始 slides
-  const baseSlides = ["blue", "green", "orange"];
+  // 擴展：頭尾各 clone 一張 => [cloneLast, ...real, cloneFirst]
+  const extended = [colors[count - 1], ...colors, colors[0]];
 
-  // 3 份擴充，開在中間那份
-  const copies = 3;
-  const total = baseSlides.length;
-  const extended = Array.from({ length: copies * total }, (_, i) => {
-    const baseIdx = mod(i, total);
-    return { i, color: baseSlides[baseIdx], baseIdx };
-  });
+  // index 從 1 開始（指向第一張真實圖）
+  const [idx, setIdx] = useState(1);
+  const [width, setWidth] = useState(0);
+  const [instant, setInstant] = useState(false); // 用來在「偷換」位置時關閉動畫
 
-  // 索引起點：中間那份的第一張
-  const middleStart = total; // 0..(total-1) | middleStart.. | 2*total..
-  const [index, setIndex] = useState(middleStart);
-  const [immediate, setImmediate] = useState(false);
-
-  const [width, setWidth] = useState(350);
-
-  // 量 container 寬
-  useLayoutEffect(() => {
-    const measure = () => {
-      if (containerRef.current) {
-        setWidth(containerRef.current.offsetWidth || 350);
-      }
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (containerRef.current) ro.observe(containerRef.current);
+  // 監測容器寬度（支援 RWD）
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setWidth(el.offsetWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // 顯示用的「實際第幾張」（0..total-1）
-  const display = mod(index, total);
-
-  // 拖曳結束：依拖曳距離決定是否換張
-  const onDragEnd = (_: any, info: { offset: { x: number } }) => {
-    const offsetX = info.offset.x;
-    const threshold = Math.max(30, width * 0.15); // 拖超過 15% 寬就換
-    if (Math.abs(offsetX) > threshold) {
-      // 向左拖（offsetX < 0）→ 下一張；向右拖 → 上一張
-      const dir = offsetX < 0 ? 1 : -1;
-      setIndex((i) => i + dir);
-    } else {
-      // 回到原位
-      // 什麼都不做，動畫會把它彈回
+  // 拖曳結束決定是否翻頁（往右 dir=+1，往左 dir=-1）
+  const onDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = Math.max(40, width * 0.15);
+    const offset = info.offset.x;
+    if (Math.abs(offset) > threshold) {
+      const dir = offset < 0 ? 1 : -1; // 左拖＝下一張；右拖＝上一張
+      setIdx((p) => p + dir);
     }
   };
 
-  // 兩個輔助切換（按鈕用）
-  const next = () => setIndex((i) => i + 1);
-  const prev = () => setIndex((i) => i - 1);
-
-  // 走到邊界就「瞬移」回中間那份對應的位置，避免長走造成邊緣卡住
-  useEffect(() => {
-    const lowerBound = 0 + 1; // 留 1 張緩衝
-    const upperBound = copies * total - 2; // 留 1 張緩衝
-    if (index <= lowerBound || index >= upperBound) {
-      const normalized = middleStart + mod(index, total);
-      // 下一個動畫循環前把 transition 設成 0 做瞬移
-      setImmediate(true);
-      setIndex(normalized);
-      // 下一個 frame 再恢復動畫
-      requestAnimationFrame(() => setImmediate(false));
+  // 動畫完成後，若落在 clone，就瞬間「偷換」到對應的真實位置
+  const onAnimationComplete = () => {
+    if (idx === 0) {
+      // 從最左的 cloneLast 回跳到最後一張真實圖
+      setInstant(true);
+      setIdx(count);
+      // 下一個事件迴圈再把 instant 關掉，避免看到 0s 動畫
+      requestAnimationFrame(() => setInstant(false));
+    } else if (idx === count + 1) {
+      // 從最右的 cloneFirst 回跳到第一張真實圖
+      setInstant(true);
+      setIdx(1);
+      requestAnimationFrame(() => setInstant(false));
     }
-  }, [index, copies, total]);
+  };
+
+  // 指示器顯示目前真實索引
+  const realActive = (idx - 1 + count) % count;
 
   return (
     <>
-      <div className="relative overflow-hidden" ref={containerRef}>
-        {/* 左右控制鈕（可選） */}
-        <button className="nav prev" onClick={prev} aria-label="Previous">
-          ‹
-        </button>
-        <button className="nav next" onClick={next} aria-label="Next">
-          ›
-        </button>
-
+      <div className="relative overflow-hidden w-[50vw] h-[250px]" ref={containerRef}>
         <motion.div
-          className="flex w-full h-[250px] flex-row"
+          className="flex w-full h-full flex-row"
           drag="x"
+          dragElastic={0.08}
+          dragMomentum={false}
+          // 注意：因為有頭尾 clone，所以可拖曳的範圍是 -(count+1)*width ~ 0
+          dragConstraints={{ left: -(count + 1) * width, right: 0 }}
           onDragEnd={onDragEnd}
-          // 用 index 決定 x，從「中間那份」的第一張算位移，這樣 x=0 表示在中間份第一張
-          animate={{ x: -(index - middleStart) * width }}
-          transition={{ type: "tween", duration: immediate ? 0 : 0.35 }}
-          style={{ touchAction: "pan-y" }} // 行動裝置更順
-        >
-          {extended.map(({ i, color }) => (
-            <div
-              key={i}
-              style={{ width }}
-              className="slide-wrapper"
-              // 每張固定寬度，父層用 translateX 位移
-            >
-              <Slide color={color} />
-            </div>
+          animate={{ x: -idx * width }}
+          transition={
+            instant
+              ? { duration: 0 } // 偷換座標時 0 秒
+              : { type: "spring", stiffness: 300, damping: 35 } // 平常用彈簧
+          }
+          onAnimationComplete={onAnimationComplete}>
+          {extended.map((c, i) => (
+            <Slide key={`${c}-${i}`} color={c} />
           ))}
         </motion.div>
 
-        <Dots count={total} active={display} />
+        <Dots count={count} active={realActive} />
       </div>
-
-      <div style={{ height: 700 }} />
     </>
   );
 };

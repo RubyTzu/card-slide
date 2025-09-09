@@ -10,10 +10,10 @@ export default function Home() {
           {/* <SlideCards /> */}
           <SlideTest />
         </div>
-        <div className="w-full h-screen relative overflow-hidden mx-auto cursor-(--my-cursor) border border-emerald-600 noise">
+        {/* <div className="w-full h-screen relative overflow-hidden mx-auto cursor-(--my-cursor) border border-emerald-600 noise">
           <DragCards />
         </div>
-        <div className="min-h-screen"></div>
+        <div className="min-h-screen"></div> */}
       </main>
     </div>
   );
