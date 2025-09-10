@@ -13,15 +13,15 @@ const Dots = ({ count, active }: { count: number; active: number }) => {
   );
 };
 
-const Slide = ({ color }: { color: string }) => <div style={{ backgroundColor: color }} className="min-w-full h-full" />;
+const Slide = ({ imgSrc }: { imgSrc: string }) => <div style={{ backgroundImage: `url('${imgSrc}')`, backgroundSize: "cover",backgroundPosition: "center" }} className="min-w-full h-full" />;
 
 export const SlideTest = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const colors = ["blue", "green", "orange"]; // 真實幻燈片
-  const count = colors.length;
+  const imgsSrc = ["/images/carousel-1.svg", "/images/carousel-1.svg", "/images/carousel-1.svg", "/images/carousel-1.svg", "/images/carousel-1.svg", "/images/carousel-1.svg"]; // 真實幻燈片
+  const count = imgsSrc.length;
 
   // 擴展：頭尾各 clone 一張 => [cloneLast, ...real, cloneFirst]
-  const extended = [colors[count - 1], ...colors, colors[0]];
+  const extended = [imgsSrc[count - 1], ...imgsSrc, imgsSrc[0]];
 
   // index 從 1 開始（指向第一張真實圖）
   const [idx, setIdx] = useState(1);
@@ -86,8 +86,8 @@ export const SlideTest = () => {
               : { type: "spring", stiffness: 300, damping: 35 } // 平常用彈簧
           }
           onAnimationComplete={onAnimationComplete}>
-          {extended.map((c, i) => (
-            <Slide key={`${c}-${i}`} color={c} />
+          {extended.map((imgSrc, i) => (
+            <Slide key={`${imgSrc}-${i}`} imgSrc={imgSrc} />
           ))}
         </motion.div>
 
