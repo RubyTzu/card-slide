@@ -13,7 +13,7 @@ const Dots = ({ count, active }: { count: number; active: number }) => {
   );
 };
 
-const Slide = ({ imgSrc }: { imgSrc: string }) => <div style={{ backgroundImage: `url('${imgSrc}')`, backgroundSize: "cover",backgroundPosition: "center" }} className="min-w-full h-full" />;
+const Slide = ({ imgSrc }: { imgSrc: string }) => <div style={{ backgroundImage: `url('${imgSrc}')`, backgroundSize: "cover",backgroundPosition: "center" }} className="min-w-full h-full border border-amber-50" />;
 
 export const SlideTest = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
